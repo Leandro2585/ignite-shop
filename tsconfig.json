@@ -8,7 +8,11 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@application/*": ["./src/application/*"]
+      "@application/*": ["./src/application/*"],
+      "@data/*": ["./src/data/*"],
+      "@infra/*": ["./src/infra/*"],
+      "@main/*": ["./src/main/*"],
+      "@domain/*": ["./src/domain/*"],
     },
     "allowJs": true,
     "skipLibCheck": true,
