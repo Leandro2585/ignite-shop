@@ -1,17 +1,11 @@
-import { Container } from '@application/styles/pages/home';
-import { Carroussel } from '@application/components'
 import { GetStaticProps } from 'next';
 import { stripeAdapter } from '@main/adapters';
-import Stripe from 'stripe';
-import { parseBRL } from '@application/utils';
+import { Carroussel } from '@application/components'
+import { Container } from '@application/styles/pages/home';
+import { Product } from '@domain/models';
 
 type HomeProps = {
-  products: Array<{
-    id: string
-    name: string
-    image_url: string
-    price: number
-  }>
+  products: Product[]
 }
 
 export default function Home({ products }: HomeProps) {
@@ -24,22 +18,8 @@ export default function Home({ products }: HomeProps) {
   )
 }
 
-
 export const getStaticProps: GetStaticProps = async () => {
-  const response = await stripeAdapter().products.list({
-    expand: ['data.default_price']
-  })
-  response.data.pop()
-  const products = response.data.map(product => {
-    const price = product.default_price as Stripe.Price
-    return {
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      price: parseBRL(price.unit_amount/100 ?? 0),
-      image_url: product.images[0]
-    }
-  })
+  const products = await stripeAdapter().loadProducts()
   return {
     props: {
       products

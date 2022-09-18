@@ -1,10 +1,9 @@
-import React from 'react'
-import { parseBRL } from '@application/utils'
+import React, { HTMLAttributes, LinkHTMLAttributes } from 'react'
 import { Product } from '@application/styles/components/product'
 import Image, { ImageProps } from 'next/future/image'
 
 interface ProductCardProps extends ImageProps {
-  price: number
+  price: string
   name: string
   description?: string
 }

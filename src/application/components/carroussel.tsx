@@ -3,14 +3,11 @@ import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
 import { CarrousselContainer } from '@application/styles/components/carroussel'
 import { ProductCard } from '@application/components'
+import Link from 'next/link'
+import { Product } from '@domain/models'
 
 type CarrousselProps = {
-  products: Array<{
-    id: string
-    name: string
-    image_url: string
-    price: number
-  }>
+  products: Product[]
 }
 
 export const Carroussel: React.FC<CarrousselProps> = ({ products }) => {
@@ -20,20 +17,21 @@ export const Carroussel: React.FC<CarrousselProps> = ({ products }) => {
       origin: 'auto',
       number: 4.1
     }
-  })
+  }) 
   return (
     <CarrousselContainer ref={sliderRef} className='keen-slider'>
       {products?.map(product => (
-        <ProductCard
-          key={product.id} 
-          alt={product.name} 
-          name={product.name}
-          price={product.price} 
-          src={product.image_url} 
-          width={400} 
-          height={400} 
-          className='keen-slider__slide'
-        />
+        <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
+          <ProductCard
+            alt={product.name} 
+            name={product.name}
+            price={product.price} 
+            src={product.image_url} 
+            width={400} 
+            height={400}
+            className='keen-slider__slide'
+          />
+        </Link>
       ))}
     </CarrousselContainer>
   )
