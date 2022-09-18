@@ -14,7 +14,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ price, name, descripti
     <Image {...props} />
     <footer>
       <strong>{name}</strong>
-      <span>{parseBRL(price)}</span>
+      <span>{price}</span>
     </footer>
   </Product>
 )

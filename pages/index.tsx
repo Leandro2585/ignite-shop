@@ -3,6 +3,7 @@ import { Carroussel } from '@application/components'
 import { GetStaticProps } from 'next';
 import { stripeAdapter } from '@main/adapters';
 import Stripe from 'stripe';
+import { parseBRL } from '@application/utils';
 
 type HomeProps = {
   products: Array<{
@@ -35,7 +36,7 @@ export const getStaticProps: GetStaticProps = async () => {
       id: product.id,
       name: product.name,
       description: product.description,
-      price: price.unit_amount/100 ?? 0,
+      price: parseBRL(price.unit_amount/100 ?? 0),
       image_url: product.images[0]
     }
   })
@@ -43,6 +44,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       products
     },
-    revalidate: 60 * 60 * 2 // 2 horas
+    revalidate: 60 * 60 * 2 // 2 hours
   }
 }
