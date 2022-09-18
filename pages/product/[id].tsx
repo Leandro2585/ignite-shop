@@ -1,25 +1,25 @@
 import { Container, ImageContainer, ProductDetailsSection } from '@application/styles/pages/product-details'
-import { parseBRL } from '@application/utils'
+import { Product } from '@domain/models'
 import { stripeAdapter } from '@main/adapters'
+import { buyProductFactory } from '@main/factories/features/buy-product-factory'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Image from 'next/future/image'
 import { useRouter } from 'next/router'
-import Stripe from 'stripe'
 
 type ProductDetailsProps = {
-  product: {
-    id: string
-    name: string
-    price: string
-    description: string
-    image_url: string
-  }
+  product: Product
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
   const { isFallback } = useRouter()
   if(isFallback) {
     return (<span>Carregando...</span>)
+  }
+
+  const handleBuyProduct = () => {
+    buyProductFactory().execute({ price_id: '' }).then((response) => {
+      window.location.href = response.checkout_url
+    })
   }
 
   return (

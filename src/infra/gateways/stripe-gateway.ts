@@ -1,5 +1,5 @@
-import { parseBRL } from '@application/utils'
 import { CheckoutGateway } from '@data/protocols'
+import { parseBRL } from '@application/utils'
 import { Product } from '@domain/models'
 import { Stripe } from 'stripe'
 
@@ -35,7 +35,8 @@ export class StripeGateway implements CheckoutGateway {
         name: product.name,
         description: product.description,
         price: parseBRL(price.unit_amount/100 ?? 0),
-        image_url: product.images[0]
+        image_url: product.images[0],
+        default_price_id: price.id
       }
     })
     return products
@@ -51,13 +52,23 @@ export class StripeGateway implements CheckoutGateway {
       name: product.name,
       description: product.description,
       price: parseBRL(price.unit_amount/100 ?? 0),
-      image_url: product.images[0]
+      image_url: product.images[0],
+      default_price_id: price.id
     }
   }
 
-  async createCheckoutSession() {
-    // this.client.checkout.sessions.create({
-
-    // })
+  async createCheckoutSession(price_id: string): Promise<Stripe.Response<Stripe.Checkout.Session>> {
+    const checkout_session = await this.client.checkout.sessions.create({
+      success_url: `${process.env.NEXT_URL}/success`,
+      cancel_url: `${process.env.NEXT_URL}/`,
+      mode: 'payment',
+      line_items: [
+        { 
+          price: price_id, 
+          quantity: 1 
+        }
+      ]
+    })
+    return checkout_session
   }
 }

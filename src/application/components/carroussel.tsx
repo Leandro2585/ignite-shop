@@ -20,7 +20,7 @@ export const Carroussel: React.FC<CarrousselProps> = ({ products }) => {
   }) 
   return (
     <CarrousselContainer ref={sliderRef} className='keen-slider'>
-      {products?.map(product => (
+      {products.map(product => (
         <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
           <ProductCard
             alt={product.name} 

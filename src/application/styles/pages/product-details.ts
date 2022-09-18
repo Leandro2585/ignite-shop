@@ -54,6 +54,7 @@ export const ProductDetailsSection = styled('div', {
     cursor: 'pointer',
     fontWeight: 'bold',
     fontSize: '$md',
+    borderRadius: 8,
     '&:hover': {
       backgroundColor: '$green300'
     }
