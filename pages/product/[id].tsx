@@ -5,6 +5,7 @@ import { buyProductFactory } from '@main/factories/features/buy-product-factory'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Image from 'next/future/image'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 type ProductDetailsProps = {
   product: Product
@@ -12,14 +13,18 @@ type ProductDetailsProps = {
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
   const { isFallback } = useRouter()
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
   if(isFallback) {
     return (<span>Carregando...</span>)
   }
 
-  const handleBuyProduct = () => {
-    buyProductFactory().execute({ price_id: '' }).then((response) => {
-      window.location.href = response.checkout_url
-    })
+  const handleBuyProduct = (price_id: string) => {
+    setIsCreatingCheckoutSession(true)
+    buyProductFactory().execute({ price_id })
+      .then(async (response) => {
+        window.location.href = response.checkout_url
+      })
+      .finally(() => setIsCreatingCheckoutSession(false))
   }
 
   return (
@@ -31,7 +36,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         <h1>{product.name}</h1>
         <span>{product.price}</span>
         <p>{product.description}</p>
-        <button>Comprar agora</button>
+        <button disabled={isCreatingCheckoutSession} onClick={() => handleBuyProduct(product.default_price_id)}>Comprar agora</button>
       </ProductDetailsSection>
     </Container>
   )

@@ -9,7 +9,6 @@ type HomeProps = {
 }
 
 export default function Home({ products }: HomeProps) {
-  console.log(products)
   return (
     <Container>
       <h2>Destaques</h2>
