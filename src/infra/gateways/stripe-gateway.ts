@@ -1,4 +1,4 @@
-import { CheckoutGateway } from '@data/protocols'
+import { BuyDetails, CheckoutGateway } from '@data/protocols'
 import { parseBRL } from '@application/utils'
 import { Product } from '@domain/models'
 import { Stripe } from 'stripe'
@@ -59,7 +59,7 @@ export class StripeGateway implements CheckoutGateway {
 
   async createCheckoutSession(price_id: string): Promise<Stripe.Response<Stripe.Checkout.Session>> {
     const checkout_session = await this.client.checkout.sessions.create({
-      success_url: `${process.env.NEXT_URL}/success`,
+      success_url: `${process.env.NEXT_URL}/success?success_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_URL}/`,
       mode: 'payment',
       line_items: [
@@ -70,5 +70,17 @@ export class StripeGateway implements CheckoutGateway {
       ]
     })
     return checkout_session
+  }
+  
+  async loadCheckoutSession(session_id: string): Promise<BuyDetails> {
+    const session = await this.client.checkout.sessions.retrieve(session_id, {
+      expand: ['line_items', 'line_items.data.price.product']
+    })
+    const product = session.line_items.data[0].price.product as Stripe.Product
+    return {
+      customer: session.customer_details.name,
+      product_name: product.name,
+      product_image: product.images[0]
+    }
   }
 }

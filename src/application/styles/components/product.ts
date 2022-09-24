@@ -1,6 +1,6 @@
 import { styled } from '../stitches-config';
 
-export const Product = styled('a', {
+export const Product = styled('div', {
   background: '$backgroundGradient',
   borderRadius: 8,
   padding: '0.25rem',
